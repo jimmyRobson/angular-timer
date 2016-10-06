@@ -211,12 +211,16 @@ var timerModule = angular.module('timer', [])
             $scope.months = Math.floor((($scope.millis / (3600000)) / 24) / 30);
             $scope.years = 0;
           } else if ($scope.maxTimeUnit === 'year') {
-            $scope.seconds = Math.floor(($scope.millis / 1000) % 60);
-            $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));
+            var soberDateMoment = moment($scope.startTimeAttr);
+            var todayMoment = moment(new Date());
+            $scope.years = todayMoment.diff(soberDateMoment, 'years');
+            soberDateMoment.add($scope.years, 'year'); // remove years from date.
+            $scope.months = todayMoment.diff(soberDateMoment, 'months');
+            soberDateMoment.add($scope.months, 'month'); // remove years from date.
+            $scope.days = todayMoment.diff(soberDateMoment, 'days');
             $scope.hours = Math.floor((($scope.millis / (3600000)) % 24));
-            $scope.days = Math.floor((($scope.millis / (3600000)) / 24) % 30);
-            $scope.months = Math.floor((($scope.millis / (3600000)) / 24 / 30) % 12);
-            $scope.years = Math.floor(($scope.millis / (3600000)) / 24 / 365);
+            $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));
+            $scope.seconds = Math.floor(($scope.millis / 1000) % 60);
           }
           // plural - singular unit decision (old syntax, for backwards compatibility and English only, could be deprecated!)
           $scope.secondsS = ($scope.seconds === 1) ? '' : 's';
